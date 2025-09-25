@@ -1,0 +1,31 @@
+CXX = g++
+CXXFLAGS = -ISDL/include -Iinclude -Itensor -std=c++20
+LDFLAGS = -LSDL/lib1 -LSDL/lib2 -lSDL2 -lSDL2_image
+
+SRCS = src/Layer.cpp src/Loss.cpp src/ReLU.cpp src/Softmax.cpp src/Convolution.cpp src/Max_Pooling.cpp src/Dataset.cpp Util.cpp main.cpp
+OBJS = $(SRCS:%.cpp=build/%.o)
+
+# Default:
+all: program
+
+# Build indivaidual:
+build/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+# Linker:
+program: $(OBJS)
+	$(CXX) $(OBJS) -o program $(LDFLAGS)
+
+# Build indivaidual:
+buildone:
+	@if [ -z "$(FILE)" ]; then \
+		echo "ERROR: Wrong Syntax"; \
+		exit 1; \
+	fi
+	mkdir -p build/$(dir $(FILE))
+	$(CXX) -c $(FILE) -o build/$(basename $(FILE)).o $(CXXFLAGS)
+
+# Delete:
+clean:
+	rm -rf build program
